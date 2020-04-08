@@ -19,6 +19,7 @@ public class FistActivity extends AppCompatActivity {
         final Button oneVOneButton = findViewById(R.id.OneVOneButton);
         final Button playerVCpuButton = findViewById(R.id.PlayerVCpuButton);
 
+
         oneVOneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -31,12 +32,19 @@ public class FistActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FistActivity.this, PlayerVCpuGameActivity.class);
-                startActivity(intent);            }
+                startActivity(intent);
+            }
         });
 
 
     }
 
+    //dodaj guzik wyjsc
+    //background kartka papieru
+    //X i O zmien na player X i player O
+    //zmien alert comment pod player x i player o
+    //usun indykator tury kolorowy dodaj do 1v1 komentarz textview
+    //guzik back dla 1v1 i 1vcpu
 
 
 }

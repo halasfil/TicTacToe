@@ -1,6 +1,6 @@
 package com.halasfilip.tictactoe;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,12 +9,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+
 public class PlayerVCpuGameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static int pointsX = 0;
     private static int pointsO = 0;
-    private boolean playerXTurn = true;
     private int roundCount = 0;
+    private boolean playerXTurn = true;
+
 
     //row1
     private Button button11;
@@ -31,6 +33,8 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
 
     private TextView scoreX;
     private TextView scoreO;
+    private TextView turnText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,7 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_game);
         scoreX = findViewById(R.id.textX);
         scoreO = findViewById(R.id.textY);
+        turnText = findViewById(R.id.turnText);
 
         button11 = findViewById(R.id.button11);
         button12 = findViewById(R.id.button12);
@@ -50,8 +55,7 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         button31 = findViewById(R.id.button31);
         button32 = findViewById(R.id.button32);
         button33 = findViewById(R.id.button33);
-
-        //row1
+//row1
         button11.setOnClickListener(this);
         button12.setOnClickListener(this);
         button13.setOnClickListener(this);
@@ -64,10 +68,10 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         button32.setOnClickListener(this);
         button33.setOnClickListener(this);
 
-        scoreX.setText("X: " + pointsX);
-        scoreO.setText("O: " + pointsO);
-
+        updatePointsText();
         resetButtons();
+        turnText.setText("Remember! CPU is hard and fast enemy!");
+
 
         Button resetBtn = findViewById(R.id.resetBtn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
@@ -76,30 +80,32 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
                 resetGame();
             }
         });
+        Button backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PlayerVCpuGameActivity.this, FistActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public void onClick(View v) {
-        if (playerXTurn) {
-            clickX((Button) v);
-            checkWinX();
-        } else {
-            clickO((Button) v);
-            checkWinO();
+        click((Button) v);
+        checkWinX();
+        if (!playerXTurn) {
+            clickCPU();
         }
+        checkWinO();
+
         if (checkWinX()) {
             playerXWinner();
         } else if (checkWinO()) {
             playerOWinner();
         } else if (roundCount == 9) {
             draw();
-        }
-        if (!playerXTurn){
-            scoreX.setBackgroundColor(Color.parseColor("#00FF0000"));
-            scoreO.setBackgroundColor(Color.RED);
-        } else {
-            scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-            scoreX.setBackgroundColor(Color.RED);
         }
     }
 
@@ -117,11 +123,7 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         clickReset(button31);
         clickReset(button32);
         clickReset(button33);
-        playerXTurn = true;
         roundCount = 0;
-        scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreX.setBackgroundColor(Color.RED);
-
     }
 
     //done
@@ -208,67 +210,10 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
     }
 
     //done
-    private void clickX(Button button) {
-        scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreX.setBackgroundColor(Color.RED);
-        if (button.getText() == " ") {
-            button.setText("X");
-            roundCount++;
-            playerXTurn = !playerXTurn;
-        }
-
-    }
-
-
-//???????????????????????????
-    private void clickO(Button button) {
-        scoreX.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreO.setBackgroundColor(Color.RED);
-        clickCPU();
-    }
-//???????????????????????????
-    private void clickCPU() {
-        //tworzymy array z naszych przyciskow done
-        //to juz w petli ??
-        //cpu losuje 2 liczby od 1-3 done
-        //if field jest pusty to cpu wpisuje O w guzik zgodny z array i koniec petli i koniec metody
-        //else losuje 2 liczby od 1-3
-
-        final Button[][] buttonsField = new Button[3][3];
-        buttonsField[0][0] = button11;
-        buttonsField[0][1] = button12;
-        buttonsField[0][2] = button13;
-
-        buttonsField[1][0] = button21;
-        buttonsField[1][1] = button22;
-        buttonsField[1][2] = button23;
-
-        buttonsField[2][0] = button31;
-        buttonsField[2][1] = button32;
-        buttonsField[2][2] = button33;
-
-        int randomRow;
-        int randomCol;
-        while (true) {
-            randomRow = (int) (Math.random() * 3);
-            randomCol = (int) (Math.random() * 3);
-            if (buttonsField[randomRow][randomCol].getText() == " ") {
-                buttonsField[randomRow][randomCol].setText("O");
-                //--------------
-                //chce zeby sam wykonal click zamiast na mnie czekac
-                buttonsField[randomRow][randomCol].performClick();
-                //--------------
-                roundCount++;
-                playerXTurn = !playerXTurn;
-                break;
-            }
-        }
-    }
-
-    //done
     private void clickReset(Button button) {
         button.setText(" ");
     }
+
     //done
     private void playerXWinner() {
         pointsX++;
@@ -276,11 +221,12 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         resetButtons();
         AlertDialog winnerDialog = new AlertDialog.Builder(PlayerVCpuGameActivity.this)
                 .setTitle("Player X has won!")
-                .setMessage("Score is\nX:   " + pointsX + "\nO:   " + pointsO)
+                .setMessage("Score is:\nX:   " + pointsX + "\nCPU:   " + pointsO)
                 .setPositiveButton("Ok", null)
                 .create();
         winnerDialog.show();
     }
+
     //dome
     private void playerOWinner() {
         pointsO++;
@@ -288,24 +234,77 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
         resetButtons();
         AlertDialog winnerDialog = new AlertDialog.Builder(PlayerVCpuGameActivity.this)
                 .setTitle("CPU has won!")
-                .setMessage("Score is\nX:   " + pointsX + "\nO:   " + pointsO)
+                .setMessage("Score is:\nX:   " + pointsX + "\nCPU:   " + pointsO)
                 .setPositiveButton("Ok", null)
                 .create();
         winnerDialog.show();
     }
+
     //done
     private void draw() {
-        Toast.makeText(this, "BORING! draw..", Toast.LENGTH_SHORT).show();
+        AlertDialog drawDialog = new AlertDialog.Builder(PlayerVCpuGameActivity.this)
+                .setTitle("Draw")
+                .setMessage("Score is:\nX:   " + pointsX + "\nCPU:   " + pointsO)
+                .setPositiveButton("Ok", null)
+                .create();
+        drawDialog.show();
         resetButtons();
     }
+
     //done
     private void updatePointsText() {
-        scoreX.setText("X: " + pointsX);
+        scoreX.setText("Player X: " + pointsX);
         scoreO.setText("CPU: " + pointsO);
+
     }
 
+    //done
+    private void click(Button button) {
+        if (button.getText() == " ") {
+            button.setText("X");
+            roundCount++;
+            playerXTurn = !playerXTurn;
+        } else {
+            Toast.makeText(this, "Choose a different field", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    //done
+    private void clickCPU() {
+
+        final Button[] buttonsField = new Button[9];
+        buttonsField[0] = button11;
+        buttonsField[1] = button12;
+        buttonsField[2] = button13;
+
+        buttonsField[3] = button21;
+        buttonsField[4] = button22;
+        buttonsField[5] = button23;
+
+        buttonsField[6] = button31;
+        buttonsField[7] = button32;
+        buttonsField[8] = button33;
+
+
+        int random;
+        while (roundCount < 9) {
+            if (buttonsField[4].getText().equals(" ")) {
+                buttonsField[4].setText("O");
+                roundCount++;
+                playerXTurn = !playerXTurn;
+                break;
+            } else {
+                random = (int) (Math.random() * 9);
+                if (buttonsField[random].getText() == " ") {
+                    buttonsField[random].setText("O");
+                    roundCount++;
+                    playerXTurn = !playerXTurn;
+                    break;
+                }
+            }
+        }
+    }
+
+
 }
-
-
-
-

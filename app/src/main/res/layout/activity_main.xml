@@ -2,15 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content"
+              android:background="@drawable/background_enter"
+>
 
-    <Button
-            android:text="Play 1 v 1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/OneVOneButton"/>
-    <Button
-            android:text="Play 1 v CPU"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/PlayerVCpuButton"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:orientation="horizontal" android:weightSum="2" android:layout_marginTop="200dp" android:layout_marginLeft="40dp" >
+        <Button
+                android:text="Play 1 v 1"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:id="@+id/OneVOneButton"
+                android:layout_margin="10dp"
+                android:background="@drawable/border_button_enter"
+
+       />
+        <Button
+                android:text="Play 1 v CPU"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:id="@+id/PlayerVCpuButton"
+                android:layout_margin="10dp"
+                android:background="@drawable/border_button_enter"
+        />
+    </LinearLayout>
+
 </LinearLayout>

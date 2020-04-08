@@ -1,5 +1,6 @@
 package com.halasfilip.tictactoe;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +32,7 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
 
     private TextView scoreX;
     private TextView scoreO;
+    private TextView turnText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_game);
         scoreX = findViewById(R.id.textX);
         scoreO = findViewById(R.id.textY);
+        turnText = findViewById(R.id.turnText);
 
         button11 = findViewById(R.id.button11);
         button12 = findViewById(R.id.button12);
@@ -64,16 +67,25 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         button32.setOnClickListener(this);
         button33.setOnClickListener(this);
 
-        scoreX.setText("X: " + pointsX);
-        scoreO.setText("O: " + pointsO);
-
+        turnText.setText("Turn Player X");
+        updatePointsText();
         resetButtons();
+
 
         Button resetBtn = findViewById(R.id.resetBtn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetGame();
+            }
+        });
+
+        Button backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OneVOneGameActivity.this, FistActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -85,9 +97,11 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         if (playerXTurn) {
             clickX((Button) v);
             checkWinX();
+
         } else {
             clickO((Button) v);
             checkWinY();
+
         }
         if (checkWinX()) {
             playerXWinner();
@@ -96,15 +110,6 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         } else if (roundCount == 9) {
             draw();
         }
-
-            if (!playerXTurn){
-                scoreX.setBackgroundColor(Color.parseColor("#00FF0000"));
-                scoreO.setBackgroundColor(Color.RED);
-            } else {
-                scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-                scoreX.setBackgroundColor(Color.RED);
-            }
-
 
     }
 
@@ -124,8 +129,7 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         clickReset(button33);
         playerXTurn = true;
         roundCount = 0;
-        scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreX.setBackgroundColor(Color.RED);
+
 
     }
 
@@ -214,24 +218,28 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
 
     //done
     private void clickX(Button button) {
-        scoreO.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreX.setBackgroundColor(Color.RED);
+
         if (button.getText() == " ") {
             button.setText("X");
             roundCount++;
             playerXTurn = !playerXTurn;
-
+            turnText.setText("Turn Player O");
+        } else {
+            Toast.makeText(this, "Choose a different field", Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     //done
     private void clickO(Button button) {
-        scoreX.setBackgroundColor(Color.parseColor("#00FF0000"));
-        scoreO.setBackgroundColor(Color.RED);
-            if (button.getText() == " ") {
+        if (button.getText() == " ") {
             button.setText("O");
             roundCount++;
             playerXTurn = !playerXTurn;
+            turnText.setText("Turn Player X");
+        } else {
+            Toast.makeText(this, "Choose a different field", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -247,8 +255,8 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         resetButtons();
         AlertDialog winnerDialog = new AlertDialog.Builder(OneVOneGameActivity.this)
                 .setTitle("Player X has won!")
-                .setMessage("Score is\nX:   " + pointsX + "\nO:   " + pointsO)
-                .setPositiveButton("Ok",null)
+                .setMessage("Score is:\nX:   " + pointsX + "\nO:   " + pointsO)
+                .setPositiveButton("Ok", null)
                 .create();
         winnerDialog.show();
     }
@@ -259,20 +267,26 @@ public class OneVOneGameActivity extends AppCompatActivity implements View.OnCli
         resetButtons();
         AlertDialog winnerDialog = new AlertDialog.Builder(OneVOneGameActivity.this)
                 .setTitle("Player O has won!")
-                .setMessage("Score is\nX:   " + pointsX + "\nO:   " + pointsO)
-                .setPositiveButton("Ok",null)
+                .setMessage("Score is:\nX:   " + pointsX + "\nO:   " + pointsO)
+                .setPositiveButton("Ok", null)
                 .create();
         winnerDialog.show();
     }
 
     private void draw() {
-        Toast.makeText(this, "BORING! draw..", Toast.LENGTH_SHORT).show();
+        AlertDialog drawDialog = new AlertDialog.Builder(OneVOneGameActivity.this)
+                .setTitle("Draw")
+                .setMessage("Score is:\nX:   " + pointsX + "\nO:   " + pointsO)
+                .setPositiveButton("Ok", null)
+                .create();
+        drawDialog.show();
         resetButtons();
     }
 
     private void updatePointsText() {
-        scoreX.setText("X: " + pointsX);
-        scoreO.setText("O: " + pointsO);
+        scoreX.setText("Player X: " + pointsX);
+        scoreO.setText("Player O: " + pointsO);
+
     }
 
 }
