@@ -289,20 +289,15 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
 
         int random;
         while (roundCount < 9) {
-            if (buttonsField[4].getText().equals(" ")) {
-                buttonsField[4].setText("O");
-                roundCount++;
-                playerXTurn = !playerXTurn;
-                break;
-            } else {
+
                 random = (int) (Math.random() * 9);
                 if (buttonsField[random].getText() == " ") {
                     buttonsField[random].setText("O");
                     roundCount++;
                     playerXTurn = !playerXTurn;
                     break;
+                
                 }
-            }
         }
     }
 
