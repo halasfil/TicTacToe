@@ -38,13 +38,5 @@ public class FistActivity extends AppCompatActivity {
 
 
     }
-
-    //dodaj guzik wyjsc
-    //background kartka papieru
-    //X i O zmien na player X i player O
-    //zmien alert comment pod player x i player o
-    //usun indykator tury kolorowy dodaj do 1v1 komentarz textview
-    //guzik back dla 1v1 i 1vcpu
-
-
+    
 }
