@@ -296,7 +296,7 @@ public class PlayerVCpuGameActivity extends AppCompatActivity implements View.On
                     roundCount++;
                     playerXTurn = !playerXTurn;
                     break;
-                
+
                 }
         }
     }
